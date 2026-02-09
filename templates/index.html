@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TB Drug Resistance Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8d7e3;
+            margin: 0;
+        }
+
+        .header {
+            background-color: #c2185b;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 40px;
+            padding: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            width: 40%;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            color: #c2185b;
+        }
+
+        input {
+            width: 90%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            background-color: #c2185b;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #880e4f;
+        }
+
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #fce4ec;
+            border-radius: 8px;
+        }
+
+        .classification {
+            font-size: 22px;
+            font-weight: bold;
+            color: red;
+        }
+
+        .download-btn {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    🧬 TB Drug Resistance Classification & Recommendation System
+</div>
+
+<div class="container">
+
+    <!-- LEFT SIDE -->
+    <div class="card">
+        <h2>Patient Details</h2>
+
+        <form action="/analyze" method="POST">
+            <input type="text" name="name" placeholder="Patient Name" required><br>
+            <input type="number" name="age" placeholder="Age" required><br>
+            <input type="text" name="gender" placeholder="Gender" required><br>
+            <input type="text" name="mutation" placeholder="Mutation Code (e.g., S531L)" required><br>
+
+            <button type="submit">ANALYZE</button>
+        </form>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="card">
+        <h2>Mutation Analysis</h2>
+
+        {% if resistant %}
+        <div class="result-box">
+            <p><strong>Resistance Detected:</strong> {{ resistant }}</p>
+        </div>
+
+        <h2>TB Classification</h2>
+        <div class="result-box">
+            <p class="classification">{{ classification }}</p>
+        </div>
+
+        <h2>Recommended Regimen</h2>
+        <div class="result-box">
+            <ul>
+                {% for drug in recommended %}
+                    <li>{{ drug }}</li>
+                {% endfor %}
+            </ul>
+
+            {% if pdf_file %}
+            <div class="download-btn">
+                <a href="/download/{{ pdf_file }}">
+                    <button>Download PDF Report</button>
+                </a>
+            </div>
+            {% endif %}
+
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+
+</body>
+</html>
