@@ -1,44 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for, session, send_from_directory
+from flask import Flask, render_template, request
 import sqlite3
-import os
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
+import random
 
 app = Flask(__name__)
-app.secret_key = "tb_secret_key"
 
-DATABASE = "tb_system.db"
+# ---------- DATABASE CONNECTION ----------
+def get_db_connection():
+    conn = sqlite3.connect("tb_system.db")
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
-# ---------------- LOGIN ---------------- #
-
+# ---------- HOME PAGE ----------
 @app.route("/")
 def home():
-    if "user" in session:
-        return render_template("index.html")
-    return render_template("login.html")
+    return render_template("index.html")
 
 
-@app.route("/login", methods=["POST"])
-def login():
-    username = request.form["username"]
-    password = request.form["password"]
-
-    if username == "admin" and password == "1234":
-        session["user"] = username
-        return redirect(url_for("home"))
-    else:
-        return "Invalid Login"
-
-
-@app.route("/logout")
-def logout():
-    session.pop("user", None)
-    return redirect(url_for("home"))
-
-
-# ---------------- ANALYZE ---------------- #
-
+# ---------- ANALYZE ROUTE ----------
 @app.route("/analyze", methods=["POST"])
 def analyze():
 
@@ -46,74 +25,53 @@ def analyze():
     age = request.form["age"]
     gender = request.form["gender"]
     mutation = request.form["mutation"]
-    doctor = request.form["doctor"]
 
-    conn = sqlite3.connect(DATABASE)
+    conn = get_db_connection()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT drug FROM mutations WHERE mutation_code=?", (mutation,))
+    cursor.execute("SELECT drug FROM mutation WHERE code = ?", (mutation,))
     result = cursor.fetchone()
+    conn.close()
 
     if result:
-        resistant = result[0]
-        classification = "Drug Resistant TB"
+        resistant = result["drug"]
 
-        recommended = [
-            "Levofloxacin",
-            "Bedaquiline",
-            "Linezolid"
-        ]
+        # Classification Logic
+        if resistant in ["Isoniazid", "Rifampicin"]:
+            classification = "MDR-TB"
+            recommended = ["Levofloxacin", "Bedaquiline", "Linezolid"]
+        elif resistant in ["Fluoroquinolones"]:
+            classification = "XDR-TB"
+            recommended = ["Bedaquiline", "Delamanid", "Linezolid"]
+        else:
+            classification = "Drug Resistant TB"
+            recommended = ["Specialist Evaluation Required"]
+
     else:
         resistant = "None"
         classification = "Drug Sensitive TB"
+        recommended = ["Isoniazid", "Rifampicin", "Ethambutol", "Pyrazinamide"]
 
-        recommended = [
-            "Isoniazid",
-            "Rifampicin",
-            "Ethambutol",
-            "Pyrazinamide"
-        ]
+    # -------- RANDOM DOCTOR ASSIGNMENT --------
+    doctors = [
+        {"name": "Dr. Priya Sharma", "hospital": "Apollo Hospital", "fees": 800},
+        {"name": "Dr. Arjun Reddy", "hospital": "Global Hospitals", "fees": 700},
+        {"name": "Dr. Meera Nair", "hospital": "Fortis Hospital", "fees": 900},
+        {"name": "Dr. Rahul Verma", "hospital": "AIIMS", "fees": 500},
+        {"name": "Dr. Kavya Iyer", "hospital": "Care Hospitals", "fees": 750}
+    ]
 
-    conn.close()
-
-    # -------- PDF GENERATION -------- #
-
-    pdf_file = f"{name}_TB_Report.pdf"
-    pdf_path = os.path.join("reports", pdf_file)
-
-    if not os.path.exists("reports"):
-        os.makedirs("reports")
-
-    c = canvas.Canvas(pdf_path, pagesize=letter)
-    c.drawString(100, 750, f"Patient Name: {name}")
-    c.drawString(100, 730, f"Age: {age}")
-    c.drawString(100, 710, f"Gender: {gender}")
-    c.drawString(100, 690, f"Mutation: {mutation}")
-    c.drawString(100, 670, f"Resistance: {resistant}")
-    c.drawString(100, 650, f"Classification: {classification}")
-    c.drawString(100, 630, f"Recommended by: Dr. {doctor}")
-    c.drawString(100, 610, "Recommended Drugs:")
-
-    y = 590
-    for drug in recommended:
-        c.drawString(120, y, drug)
-        y -= 20
-
-    c.save()
+    selected_doctor = random.choice(doctors)
+    appointment_time = "Tomorrow 10:30 AM"
 
     return render_template(
         "index.html",
         resistant=resistant,
         classification=classification,
         recommended=recommended,
-        doctor=doctor,
-        pdf_file=pdf_file
+        doctor=selected_doctor,
+        appointment_time=appointment_time
     )
-
-
-@app.route("/download/<filename>")
-def download(filename):
-    return send_from_directory("reports", filename, as_attachment=True)
 
 
 if __name__ == "__main__":
