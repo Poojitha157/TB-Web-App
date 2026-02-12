@@ -18,6 +18,12 @@
             font-weight: bold;
         }
 
+        .logout {
+            position:absolute;
+            right:20px;
+            top:20px;
+        }
+
         .container {
             display: flex;
             justify-content: space-around;
@@ -52,10 +58,6 @@
             cursor: pointer;
         }
 
-        button:hover {
-            background-color: #880e4f;
-        }
-
         .result-box {
             margin-top: 20px;
             padding: 15px;
@@ -68,10 +70,6 @@
             font-weight: bold;
             color: red;
         }
-
-        .download-btn {
-            margin-top: 15px;
-        }
     </style>
 </head>
 
@@ -79,11 +77,13 @@
 
 <div class="header">
     🧬 TB Drug Resistance Classification & Recommendation System
+    <div class="logout">
+        <a href="/logout"><button>Logout</button></a>
+    </div>
 </div>
 
 <div class="container">
 
-    <!-- LEFT SIDE -->
     <div class="card">
         <h2>Patient Details</h2>
 
@@ -91,17 +91,17 @@
             <input type="text" name="name" placeholder="Patient Name" required><br>
             <input type="number" name="age" placeholder="Age" required><br>
             <input type="text" name="gender" placeholder="Gender" required><br>
-            <input type="text" name="mutation" placeholder="Mutation Code (e.g., S531L)" required><br>
+            <input type="text" name="mutation" placeholder="Mutation Code" required><br>
+            <input type="text" name="doctor" placeholder="Doctor Name" required><br>
 
             <button type="submit">ANALYZE</button>
         </form>
     </div>
 
-    <!-- RIGHT SIDE -->
     <div class="card">
-        <h2>Mutation Analysis</h2>
-
         {% if resistant %}
+
+        <h2>Mutation Analysis</h2>
         <div class="result-box">
             <p><strong>Resistance Detected:</strong> {{ resistant }}</p>
         </div>
@@ -119,15 +119,14 @@
                 {% endfor %}
             </ul>
 
-            {% if pdf_file %}
-            <div class="download-btn">
-                <a href="/download/{{ pdf_file }}">
-                    <button>Download PDF Report</button>
-                </a>
-            </div>
-            {% endif %}
+            <p><strong>Recommended by:</strong> Dr. {{ doctor }}</p>
 
+            <br>
+            <a href="/download/{{ pdf_file }}">
+                <button>Download PDF Report</button>
+            </a>
         </div>
+
         {% endif %}
     </div>
 
