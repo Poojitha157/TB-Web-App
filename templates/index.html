@@ -16,6 +16,7 @@
             padding: 20px;
             font-size: 28px;
             font-weight: bold;
+            position: relative;
         }
 
         .container {
@@ -68,6 +69,10 @@
             font-weight: bold;
             color: red;
         }
+
+        .download-btn {
+            margin-top: 15px;
+        }
     </style>
 </head>
 
@@ -97,9 +102,9 @@
     <div class="card">
         <h2>Mutation Analysis</h2>
 
-        {% if resistant %}
+        {% if resistant is not none %}
         <div class="result-box">
-            <p><strong>Resistance Detected:</strong> {{ resistant }}</p>
+            <p><strong>Resistance Detected:</strong> {{ resistant if resistant else "None" }}</p>
         </div>
 
         <h2>TB Classification</h2>
@@ -114,20 +119,34 @@
                     <li>{{ drug }}</li>
                 {% endfor %}
             </ul>
-        </div>
 
-        <h2>Doctor Appointment</h2>
-        <div class="result-box">
-            <p><strong>Doctor:</strong> {{ doctor.name }}</p>
-            <p><strong>Hospital:</strong> {{ doctor.hospital }}</p>
-            <p><strong>Appointment Time:</strong> {{ appointment_time }}</p>
-            <p><strong>Consultation Fees:</strong> ₹{{ doctor.fees }}</p>
+            {% if pdf_file %}
+            <div class="download-btn">
+                <a href="/download/{{ pdf_file }}">
+                    <button>Download PDF Report</button>
+                </a>
+            </div>
+            {% endif %}
         </div>
-
         {% endif %}
     </div>
 
 </div>
+
+<!-- DOCTOR POPUP -->
+{% if doctor %}
+<script>
+    window.onload = function() {
+        alert(
+            "Doctor Recommendation:\n\n" +
+            "Name: {{ doctor.name }}\n" +
+            "Hospital: {{ doctor.hospital }}\n" +
+            "Appointment Time: {{ doctor.time }}\n" +
+            "Consultation Fees: {{ doctor.fees }}"
+        );
+    }
+</script>
+{% endif %}
 
 </body>
 </html>
