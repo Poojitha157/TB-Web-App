@@ -1,3 +1,9 @@
 flask
+flask-login
+flask-bcrypt
 reportlab
+matplotlib
+pandas
+numpy
+scikit-learn
 gunicorn

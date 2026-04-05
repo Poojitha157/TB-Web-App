@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<div class="container">
+
+<h1>🧬 TB Drug Resistance System</h1>
+
+<form method="POST" enctype="multipart/form-data">
+<input name="name" placeholder="Patient Name">
+<input name="mutation" placeholder="Mutation (e.g. rpoB_S531L)">
+<input type="file" name="file">
+<button>Analyze</button>
+</form>
+
+{% if result %}
+<div class="card">
+
+<h2>🧾 Diagnosis</h2>
+<p>{{result}}</p>
+<p>Type: {{tb_type}}</p>
+
+<hr>
+
+<h2>🤖 ML Model</h2>
+<p>Accuracy: {{accuracy}}%</p>
+
+<hr>
+
+<h2>💊 Treatment</h2>
+<p>{{drug}}</p>
+
+<hr>
+
+<h2>👨‍⚕️ Doctor</h2>
+<p>{{doctor.name}}</p>
+<p>{{doctor.hospital}} ({{doctor.city}})</p>
+<p>{{doctor.cost}}</p>
+<p>{{doctor.time}}</p>
+
+<a href="/download/{{pdf}}">Download Report</a>
+
+</div>
+{% endif %}
+
+<br>
+<a href="/stats">Analytics</a>
+<a href="/logout">Logout</a>
+
+</div>
+
+</body>
+</html>

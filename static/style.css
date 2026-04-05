@@ -1,63 +1,101 @@
+/* BACKGROUND */
 body {
-    font-family: Arial;
-    background: #fdeef4;
+    font-family: 'Segoe UI', sans-serif;
     margin: 0;
-}
-
-.header {
-    background: #c2185b;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
     color: white;
-    text-align: center;
-    padding: 20px;
-    font-size: 22px;
-    font-weight: bold;
 }
 
-.container {
+/* CENTER LOGIN */
+.center {
     display: flex;
-    padding: 30px;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
 }
 
-.left-panel {
-    width: 40%;
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
+/* GLASS CARD */
+.login-box {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 40px;
+    width: 320px;
+    text-align: center;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5);
 }
 
-.right-panel {
-    width: 60%;
-    margin-left: 20px;
-}
-
-.box {
-    background: white;
-    padding: 20px;
+/* TITLE */
+.login-box h2 {
     margin-bottom: 20px;
-    border-radius: 12px;
 }
 
+/* INPUT */
 input {
-    width: 100%;
-    padding: 8px;
-    margin: 8px 0;
+    width: 90%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
 }
 
+/* BUTTON */
 button {
-    background: #c2185b;
-    color: white;
-    padding: 10px;
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
     border: none;
-    border-radius: 6px;
-    margin-top: 10px;
+    margin-top: 15px;
+    background: linear-gradient(90deg, #22c55e, #4ade80);
+    color: white;
+    font-weight: bold;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 button:hover {
-    background: #ad1457;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #22c55e;
 }
 
-.classification {
-    font-weight: bold;
-    color: red;
+/* LINKS */
+a {
+    color: #38bdf8;
+    text-decoration: none;
+}
+
+/* DASHBOARD */
+.container {
+    width: 70%;
+    margin: auto;
+    text-align: center;
+    padding: 20px;
+}
+
+/* CARD */
+.card {
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+    padding: 25px;
+    border-radius: 20px;
+    margin-top: 25px;
+    text-align: left;
+    box-shadow: 0 0 25px rgba(0,0,0,0.3);
+}
+
+/* HEADINGS */
+h1 {
+    color: #38bdf8;
+}
+
+h2 {
+    color: #22c55e;
+}
+
+/* HR */
+hr {
+    border: 0.5px solid rgba(255,255,255,0.2);
 }
